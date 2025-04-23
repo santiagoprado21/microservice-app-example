@@ -10,7 +10,7 @@ services:
       - app-network
 
   users-api:
-    image: users-api:latest
+    image: ingsoftv.azurecr.io/users-api:latest
     container_name: users-api
     environment:
       - SERVER_PORT=8083
@@ -23,7 +23,7 @@ services:
       - app-network
 
   auth-api:
-    image: auth-api:latest
+    image: ingsoftv.azurecr.io/auth-api:latest
     container_name: auth-api
     environment:
       - ZIPKIN_URL=http://zipkin:9411/api/v2/spans
@@ -38,7 +38,7 @@ services:
       - app-network
 
   todos-api:
-    image: todos-api:latest
+    image: ingsoftv.azurecr.io/todos-api:latest
     container_name: todos-api
     environment:
       - TODO_API_PORT=8082
@@ -54,7 +54,7 @@ services:
       - app-network
 
   log-message-processor:
-    image: log-message-processor:latest
+    image: ingsoftv.azurecr.io/log-message-processor:latest
     container_name: log-message-processor
     environment:
       - REDIS_HOST=redis-queue
@@ -68,13 +68,13 @@ services:
       - app-network
 
   frontend:
-    image: frontend:latest
+    image: ingsoftv.azurecr.io/frontend:latest
     container_name: frontend
     environment:
-      - AUTH_API_ADDRESS http://auth-api:8000
-      - TODOS_API_ADDRESS http://todos-api:8082
+      - AUTH_API_ADDRESS=http://auth-api:8000
+      - TODOS_API_ADDRESS=http://todos-api:8082
     ports:
-      - "8000:8000"
+      - "8080:8080"
     depends_on:
       - auth-api
       - todos-api
