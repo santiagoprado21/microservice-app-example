@@ -34,19 +34,23 @@ jobs:
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
 
-      # Paso 4: Construir la imagen Docker
+      # Paso 4: Cambiar al directorio 'auth-api' para poder acceder al Dockerfile
+      - name: Change directory to auth-api
+        run: cd auth-api
+
+      # Paso 5: Construir la imagen Docker
       - name: Build Docker image
         run: |
           docker build -t auth-api:$GITHUB_SHA .
-          
-      # Paso 5: Si es un merge a `dev`, empuja la imagen a ACR
+
+      # Paso 6: Si es un merge a `dev`, empuja la imagen a ACR
       - name: Push Docker image to ACR if merged to dev
         if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
         run: |
           # Tag aleatorio
           RANDOM_TAG=$(openssl rand -hex 6)
-          docker tag my-app-image:$GITHUB_SHA ${{ secrets.ACR_LOGIN_SERVER }}/my-app:$RANDOM_TAG
-          docker tag my-app-image:$GITHUB_SHA ${{ secrets.ACR_LOGIN_SERVER }}/my-app:latest
+          docker tag auth-api:$GITHUB_SHA ${{ secrets.ACR_LOGIN_SERVER }}/auth-api:$RANDOM_TAG
+          docker tag auth-api:$GITHUB_SHA ${{ secrets.ACR_LOGIN_SERVER }}/auth-api:latest
           
           # Push a ACR
           docker push ${{ secrets.ACR_LOGIN_SERVER }}/auth-api:$RANDOM_TAG
