@@ -1,0 +1,56 @@
+name: Docker CI log-message-processor
+
+on:
+  pull_request:
+    paths:
+      - 'log-message-processor/**'
+      - '.github/workflows/log-message-processor-ci.yml'
+    branches:
+      - 'dev'
+      - 'master'
+  push:
+    paths:
+      - 'log-message-processor/**'
+      - '.github/workflows/log-message-processor-ci.yml'
+    branches:
+      - 'dev'
+      - 'master'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Build Docker image
+        run: |
+          docker build -f log-message-processor/Dockerfile -t log-message-processor:$GITHUB_SHA log-message-processor
+
+      - name: Push Docker image to ACR with random tag
+        if: (github.event_name == 'push' || github.event_name == 'pull_request') && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/master')
+        run: |
+          # Tag aleatorio
+          RANDOM_TAG=$(openssl rand -hex 6)
+          docker tag log-message-processor:$GITHUB_SHA ${{ secrets.ACR_LOGIN_SERVER }}/log-message-processor:$RANDOM_TAG
+          
+          # Push a ACR
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/log-message-processor:$RANDOM_TAG
+
+      - name: Push Docker image to ACR with latest tag
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: |
+          # Tag aleatorio
+          docker tag log-message-processor:$GITHUB_SHA ${{ secrets.ACR_LOGIN_SERVER }}/log-message-processor:latest
+          
+          # Push a ACR
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/log-message-processor:latest
