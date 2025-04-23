@@ -32,4 +32,4 @@ jobs:
           script: |
             cd ~/microservice-app-example/
             git pull origin master
-            docker-compose up -dV
+            sudo docker-compose up -dV
