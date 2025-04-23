@@ -47,5 +47,5 @@ jobs:
           docker tag my-app-image:$GITHUB_SHA ${{ secrets.ACR_LOGIN_SERVER }}/my-app:latest
           
           # Push a ACR
-          docker push ${{ secrets.ACR_LOGIN_SERVER }}/my-app:$RANDOM_TAG
-          docker push ${{ secrets.ACR_LOGIN_SERVER }}/my-app:latest
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/auth-api:$RANDOM_TAG
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/auth-api:latest
