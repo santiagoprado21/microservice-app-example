@@ -4,11 +4,13 @@ on:
   pull_request:
     paths:
       - 'auth-api/**'
+      - '.github/workflows/auth-api-ci.yml'
     branches:
       - 'dev'
   push:
     paths:
       - 'auth-api/**'
+      - '.github/workflows/auth-api-ci.yml'
     branches:
       - 'dev'
 
