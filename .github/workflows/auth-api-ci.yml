@@ -1,0 +1,51 @@
+name: Docker CI auth-api
+
+on:
+  pull_request:
+    paths:
+      - 'auth-api/**'
+    branches:
+      - 'dev'
+  push:
+    paths:
+      - 'auth-api/**'
+    branches:
+      - 'dev'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Paso 1: Hacer checkout del código
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Paso 2: Configurar Docker
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Paso 3: Iniciar sesión en Azure Container Registry (ACR)
+      - name: Log in to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      # Paso 4: Construir la imagen Docker
+      - name: Build Docker image
+        run: |
+          docker build -t auth-api:$GITHUB_SHA .
+          
+      # Paso 5: Si es un merge a `dev`, empuja la imagen a ACR
+      - name: Push Docker image to ACR if merged to dev
+        if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+        run: |
+          # Tag aleatorio
+          RANDOM_TAG=$(openssl rand -hex 6)
+          docker tag my-app-image:$GITHUB_SHA ${{ secrets.ACR_LOGIN_SERVER }}/my-app:$RANDOM_TAG
+          docker tag my-app-image:$GITHUB_SHA ${{ secrets.ACR_LOGIN_SERVER }}/my-app:latest
+          
+          # Push a ACR
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/auth-api:$RANDOM_TAG
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/auth-api:latest
