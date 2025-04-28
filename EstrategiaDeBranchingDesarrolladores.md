@@ -1,68 +1,68 @@
-# Estrategia de Branching para Desarrolladores
+# Branching Strategy for Developers
 
-## 🧩 Tipo de Estrategia
+## 🧩 Strategy Type
 
 **Trunk-Based Development (TBD)**
 
-Los desarrolladores siguen una estrategia basada en Trunk-Based Development, enfocada en integración continua, ramas de corta duración y despliegue rápido.
+Developers follow a Trunk-Based Development strategy focused on continuous integration, short-lived branches, and rapid deployment.
 
 ---
 
-## 🌳 Estructura de Ramas
+## 🌳 Branch Structure
 
-- Rama principal: `master` (rama de producción)
-- Ramas de desarrollo: `feature/*` creadas desde `master`
-- Cada microservicio puede tener sus propias ramas `feature/*`
-- No hay ramas `develop`, `release`, `hotfix` ni `support`
-
----
-
-## 🔄 Flujo de Desarrollo
-
-1. Se crea una rama `feature/nombre-de-la-caracteristica` desde `master`
-2. Se desarrolla la funcionalidad
-3. Se abre un Pull Request hacia `master`
-4. Se realiza revisión de código
-5. Se ejecutan pruebas automatizadas y validaciones de CI
-6. Si todo pasa, se fusiona a `master`
+- Main branch: `master` (production branch)
+- Development branches: `feature/*` created from `master`
+- Each microservice can have its own `feature/*` branches
+- No `develop`, `release`, `hotfix`, or `support` branches
 
 ---
 
-## ⚙️ Integración Continua
+## 🔄 Development Flow
 
-- Cada microservicio tiene su propio pipeline de CI:
+1. Create a `feature/feature-name` branch from `master`
+2. Develop the functionality
+3. Open a Pull Request to `master`
+4. Perform code review
+5. Run automated tests and CI validations
+6. If everything passes, merge into `master`
+
+---
+
+## ⚙️ Continuous Integration
+
+- Each microservice has its own CI pipeline:
   - `auth-api-ci.yml`
   - `frontend-ci.yml`
   - `log-message-processor-ci.yml`
   - `todos-api-ci.yml`
   - `users-api-ci.yml`
-- Las pruebas y validaciones se ejecutan en cada push o PR
+- Tests and validations are triggered on each push or PR
 
 ---
 
-## 🚀 Despliegue
+## 🚀 Deployment
 
-- Despliegue automático se activa cuando:
-  - Los cambios se fusionan en `master`
-  - Todas las pruebas CI pasan exitosamente
-  - El pipeline central de CD (`cd.yml`) se ejecuta correctamente
-
----
-
-## ✅ Características de TBD que se cumplen
-
-- Integración frecuente a `master`
-- Ramas de corta duración
-- Sin ramas paralelas de mantenimiento
-- Automatización de pruebas y despliegues
-- Flujo simple, directo y eficiente
+- Automatic deployment is triggered when:
+  - Changes are merged into `master`
+  - All CI tests pass successfully
+  - The central CD pipeline (`cd.yml`) runs successfully
 
 ---
 
-## 🎯 ¿Por qué es adecuada esta estrategia para desarrolladores?
+## ✅ TBD Characteristics Met
 
-- Es un **proyecto de microservicios**
-- El equipo es **pequeño**
-- Se requiere **entrega continua**
-- Hay **automatización de pruebas**
-- Se evita la complejidad de flujos como Git Flow
+- Frequent integration into `master`
+- Short-lived branches
+- No parallel maintenance branches
+- Automated testing and deployments
+- Simple, direct, and efficient workflow
+
+---
+
+## 🎯 Why Is This Strategy Suitable for Developers?
+
+- It's a **microservices project**
+- The team is **small**
+- **Continuous delivery** is required
+- **Test automation** is in place
+- Avoids the complexity of flows like Git Flow
